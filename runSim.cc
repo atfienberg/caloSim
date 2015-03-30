@@ -29,8 +29,6 @@
 //
 // $Id: TestEm18.cc 66241 2012-12-13 18:34:42Z gunter $
 //
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #include "G4RunManager.hh"
 #include "G4UImanager.hh"
@@ -41,7 +39,7 @@
 #include "ActionInitialization.hh"
 #include "SteppingVerbose.hh"
 #include <iostream>
-
+#include <ctime>
 
 #include "G4VisExecutive.hh"
 
@@ -49,12 +47,13 @@
 
 using namespace std;
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 int main(int argc,char** argv) {
 
   //choose the Random engine
-  CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine);
+  long seeds[2];
+  seeds[0] = (long) time(NULL);
+  seeds[1] = (long) (seeds[0] * G4UniformRand());
+  CLHEP::HepRandom::setTheSeeds(seeds);
 
   //my Verbose output class
   G4VSteppingVerbose::SetInstance(new SteppingVerbose);

@@ -38,6 +38,7 @@
 #include "G4LogicalVolume.hh"
 
 #include <vector>
+#include <memory>
 
 class G4VPhysicalVolume;
 class G4LogicalVolume;
@@ -51,10 +52,6 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     virtual ~DetectorConstruction();
 
     virtual G4VPhysicalVolume* Construct();
-  
-private:
-  G4Material* mPbF2_;
-  G4LogicalVolume* logicalCrystal_;
   
 };
 

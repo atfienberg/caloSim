@@ -57,7 +57,6 @@ DetectorConstruction::DetectorConstruction()
 
 DetectorConstruction::~DetectorConstruction()
 {
-  delete mPbF2_;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -68,11 +67,11 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4NistManager* nist = G4NistManager::Instance();
   G4Element* Pb = nist->FindOrBuildElement("Pb"); 
   G4Element* F = nist->FindOrBuildElement("F");
-  mPbF2_ = new G4Material("PbF2", 7.77*g/cm3, 2);
+  G4Material* mPbF2 = new G4Material("PbF2", 7.77*g/cm3, 2);
   G4int nPb = 1;
   G4int nF = 2;
-  mPbF2_->AddElement(Pb, nPb);
-  mPbF2_->AddElement(F, nF);
+  mPbF2->AddElement(Pb, nPb);
+  mPbF2->AddElement(F, nF);
    
   // Option to switch on/off checking of volumes overlaps
   G4bool checkOverlaps = true;
@@ -110,9 +109,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     new G4Box("solidCrystal",
 	      0.5*CRYSTALWIDTH, 0.5*CRYSTALHEIGHT, 0.5*CRYSTALLENGTH);
 
-  logicalCrystal_ = new G4LogicalVolume(solidCrystal,
-					mPbF2_,
-					"logicalCrystal");
+  G4LogicalVolume* logicalCrystal = new G4LogicalVolume(solidCrystal,
+							mPbF2,
+							"logicalCrystal");
   
   for(int row = 0; row < NROWS; ++row){
     for(int col = 0; col < NCOLS; ++col){
@@ -121,7 +120,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
       new G4PVPlacement(0,
 			G4ThreeVector(xPos, yPos, 0),
-			logicalCrystal_,
+			logicalCrystal,
 			"PhysicalCrystal",
 			logicWorld,
 			false,

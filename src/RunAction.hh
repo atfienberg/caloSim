@@ -35,6 +35,7 @@
 #define RunAction_h 1
 
 #include "G4UserRunAction.hh"
+#include "G4ThreeVector.hh"
 #include "G4Run.hh"
 #include "TTree.h"
 #include "TFile.h"
@@ -48,6 +49,7 @@ public:
   
   void initializeTreeAndHist();
   void recordEndOfEvent();
+  void fillHists(const G4ThreeVector& pos, G4double eDep);
   void closeFile();
 
   void accountEdep(G4int crystalId, G4double eDep) {crystalDeps_[crystalId] += eDep; }
@@ -55,7 +57,9 @@ public:
 
 private:
   TTree* t_;
-  TH2D* hist_;
+  TH2D* crystalHist_;
+  TH2D* radialHist_;
+  TH2D* radialLongitudinalHist_;
   TFile* file_;
   double crystalDeps_[54];
 };

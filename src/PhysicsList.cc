@@ -23,7 +23,6 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file electromagnetic/TestEm2/src/PhysicsList.cc
 /// \brief Implementation of the PhysicsList class
 //
 // $Id: PhysicsList.cc 82293 2014-06-13 15:23:19Z gcosmo $
@@ -33,9 +32,8 @@
 
 #include "PhysicsList.hh"
 
-#include "PhysListEmStandard.hh"
-
 #include "G4EmStandardPhysics.hh"
+#include "G4EmStandardPhysics_option3.hh"
 #include "G4EmLivermorePhysics.hh"
 #include "G4EmPenelopePhysics.hh"
 #include "G4EmLowEPPhysics.hh"
@@ -56,7 +54,7 @@ PhysicsList::PhysicsList()
   SetVerboseLevel(1);
 
   // EM physics
-  fEmPhysicsList = new G4EmStandardPhysics();
+  fEmPhysicsList = new G4EmStandardPhysics_option3();
   fDecay = new G4DecayPhysics();
   
   G4LossTableManager::Instance();

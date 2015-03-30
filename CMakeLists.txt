@@ -22,6 +22,7 @@ target_link_libraries (runSim ${ROOT_LIBRARIES} ${Geant4_LIBRARIES})
 
 set(SCRIPTS
   vis.mac
+  do10k.mac
   )
 
 foreach(_script ${SCRIPTS})
