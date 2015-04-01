@@ -35,11 +35,18 @@
 # Specify view angle:
 /vis/viewer/set/viewpointThetaPhi 150. 30.
 #
+#side view
+#/vis/viewer/set/viewpointThetaPhi -90 0
+#back view
+#/vis/viewer/set/viewpointThetaPhi 0 0
 # Specify zoom value:
 /vis/viewer/zoom 1
 #
 # Specify style (surface or wireframe):
 /vis/viewer/set/style wireframe
+
+#make background white
+/vis/viewer/set/background White
 #
 # Draw coordinate axes:
 #/vis/scene/add/axes 0 0 0 1 m
@@ -75,7 +82,6 @@
 /vis/viewer/set/autoRefresh true
 /vis/verbose warnings
 
-/vis/geometry/set/visibility World 0 false
 #
 # For file-based drivers, use this to create an empty detector view:
 #/vis/viewer/flush

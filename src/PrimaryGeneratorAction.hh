@@ -37,6 +37,8 @@
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "G4ParticleGun.hh"
 #include "globals.hh"
+#include "SimConfiguration.hh"
+#include <memory>
 
 class G4Event;
 class DetectorConstruction;
@@ -46,14 +48,15 @@ class DetectorConstruction;
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
 public:
-  PrimaryGeneratorAction();    
+  PrimaryGeneratorAction(std::shared_ptr<SimConfiguration> simConf);    
   virtual ~PrimaryGeneratorAction();
 
   virtual void GeneratePrimaries(G4Event*);
-  inline G4ParticleGun* GetParticleGun() {return fParticleGun;};
+  inline G4ParticleGun* GetParticleGun() {return particleGun_.get();};
     
 private:
-  G4ParticleGun*           fParticleGun;
+  std::unique_ptr<G4ParticleGun>   particleGun_;
+  std::shared_ptr<SimConfiguration> simConf_;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

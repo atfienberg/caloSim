@@ -33,24 +33,21 @@
 #include "G4RunManager.hh"
 #include "G4NistManager.hh"
 #include "G4Box.hh"
+#include "G4SubtractionSolid.hh"
 #include "G4Element.hh"
 #include "G4LogicalVolume.hh"
+#include "G4VisAttributes.hh"
+#include "G4Colour.hh"
 #include "G4PVPlacement.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4String.hh"
 #include <iostream>
 #include <cstdlib>
 
-#define CRYSTALLENGTH 140*mm
-#define CRYSTALWIDTH 25*mm
-#define CRYSTALHEIGHT 25*mm
-#define NROWS 6
-#define NCOLS 9
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-DetectorConstruction::DetectorConstruction()
-  : G4VUserDetectorConstruction()
+DetectorConstruction::DetectorConstruction(std::shared_ptr<SimConfiguration> simConf)
+  : G4VUserDetectorConstruction(),
+    simConf_(simConf)
 { }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -63,6 +60,12 @@ DetectorConstruction::~DetectorConstruction()
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {  
+  double crystalLength = simConf_->calo.length;
+  double crystalWidth = simConf_->calo.width;
+  double crystalHeight = simConf_->calo.height;
+  int nRows = simConf_->calo.nRows;
+  int nCols = simConf_->calo.nCols;
+
   // build pbf2 material
   G4NistManager* nist = G4NistManager::Instance();
   G4Element* Pb = nist->FindOrBuildElement("Pb"); 
@@ -79,9 +82,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   //     
   // World
   //
-  G4double worldHeight = 2 * NROWS * CRYSTALHEIGHT;
-  G4double worldWidth = 2 * NCOLS * CRYSTALWIDTH;
-  G4double worldLength = 2 * CRYSTALLENGTH;
+  G4double worldHeight = 2 * nRows * crystalHeight;
+  G4double worldWidth = 2 * nCols * crystalWidth;
+  G4double worldLength = 2 * crystalLength;
   G4Material* worldMat = nist->FindOrBuildMaterial("G4_AIR");
   
   G4Box* solidWorld =    
@@ -104,31 +107,108 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                       checkOverlaps);        //overlaps checking
             
 
+  G4VisAttributes* worldAttr = new G4VisAttributes();
+  worldAttr->SetVisibility(false);
+  logicWorld->SetVisAttributes(worldAttr);
+
+  //build lateral leakage catcher
+  
+  G4ThreeVector globalCaloCenter( (nCols % 2 - 1) * crystalWidth/2.0,
+			      -1*(nRows % 2 - 1) * crystalHeight/2.0,
+			      0);
+
+  G4Box* caloPlusLateral = new G4Box("caloPlusLateral", 
+				     0.5*crystalWidth*nCols + 0.5,
+				     0.5*crystalHeight*nRows + 0.5,
+				     0.5*crystalLength);
+  G4Box* fullCaloSize = new G4Box("fullCalo",
+				  0.5*crystalWidth*nCols, 
+				  0.5*crystalHeight*nRows,
+				  0.5*crystalLength);
+  G4SubtractionSolid* lateralLeakageSolid = new G4SubtractionSolid("lateral",
+								   caloPlusLateral,
+								   fullCaloSize);
+    
+  G4LogicalVolume* logicLateralLeakage =
+    new G4LogicalVolume(lateralLeakageSolid,
+			worldMat,
+			"lateral");
+  new G4PVPlacement(0,
+		    globalCaloCenter,
+		    logicLateralLeakage,
+		    "lateral",
+		    logicWorld,
+		    false,
+		    0,
+		    checkOverlaps);
+  G4VisAttributes* latAttr = new G4VisAttributes(G4Colour::Magenta());
+  latAttr->SetForceWireframe(true);
+  latAttr->SetVisibility(true);
+  logicLateralLeakage->SetVisAttributes(latAttr);
+  
+  //build albedo and longitudunal leakage catchers
+  G4Box* albedoLongSolid = new G4Box("albedoLong",
+				 0.5*crystalWidth*nCols + 0.5,
+				 0.5*crystalHeight*nRows + 0.5,
+				 0.5);
+  G4LogicalVolume* logicAlbedoLong =
+    new G4LogicalVolume(albedoLongSolid,
+			worldMat,
+			"albedoLong");
+  new G4PVPlacement(0,
+		    globalCaloCenter - G4ThreeVector(0, 0, 0.5*crystalLength + 0.5),
+		    logicAlbedoLong,
+		    "albedo",
+		    logicWorld,
+		    false,
+		    0, 
+		    checkOverlaps);
+  new G4PVPlacement(0,
+		    globalCaloCenter + G4ThreeVector(0, 0, 0.5*crystalLength + 0.5),
+		    logicAlbedoLong,
+		    "longitudinal",
+		    logicWorld,
+		    false,
+		    0, 
+		    checkOverlaps);
+
+  G4VisAttributes* albLongAtr = new G4VisAttributes(G4Colour::Green());
+  albLongAtr->SetForceWireframe(true);
+  albLongAtr->SetVisibility(true);
+  logicAlbedoLong->SetVisAttributes(albLongAtr);
+		 
   //build the crystals
   G4Box* solidCrystal =
     new G4Box("solidCrystal",
-	      0.5*CRYSTALWIDTH, 0.5*CRYSTALHEIGHT, 0.5*CRYSTALLENGTH);
+	      0.5*crystalWidth, 0.5*crystalHeight, 0.5*crystalLength);
 
   G4LogicalVolume* logicalCrystal = new G4LogicalVolume(solidCrystal,
 							mPbF2,
 							"logicalCrystal");
   
-  for(int row = 0; row < NROWS; ++row){
-    for(int col = 0; col < NCOLS; ++col){
-      double xPos = (-NCOLS/2 + col) * CRYSTALWIDTH;
-      double yPos = (NROWS/2 - row) * CRYSTALHEIGHT;
+  for(int row = 0; row < nRows; ++row){
+    for(int col = 0; col < nCols; ++col){
+      double xPos = (-nCols/2 + col) * crystalWidth;
+      double yPos = (nRows/2 - row) * crystalHeight;
 
       new G4PVPlacement(0,
 			G4ThreeVector(xPos, yPos, 0),
 			logicalCrystal,
-			"PhysicalCrystal",
+			"crystal",
 			logicWorld,
 			false,
-			NCOLS*row + col,
+			nCols*row + col,
 			checkOverlaps);
    }
   }
 
+  G4VisAttributes* crystalAttr = new G4VisAttributes(G4Colour::Black());
+  crystalAttr->SetForceWireframe(true);
+  crystalAttr->SetVisibility(true);
+  logicalCrystal->SetVisAttributes(crystalAttr);
+
+
+  //
   
   return physWorld;
 }

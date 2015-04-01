@@ -1,0 +1,34 @@
+{
+    "calorimeter": {
+	"nRows"    : 6,
+	"nColumns" : 9,
+	"width"    : 25,
+	"height"   : 25,
+	"length"   :140
+    },
+    
+    "generatorList": 
+    [{
+	"particleType"        : "e+",
+	"energy"              : 3000,
+	"impactPosition"      : [0, 0],
+	"angleX"              : 0,
+	"angleY"              : 0
+    },
+    {
+	"particleType"        : "e+",
+	"energy"              : 3000,
+	"impactPosition"      : [60, 0],
+	"angleX"              : 0,
+	"angleY"              : 0
+    },
+    {
+	"particleType"        : "e+",
+	"energy"              : 1500,
+	"impactPosition"      : [35, 23],
+	"angleX"              : 0,
+	"angleY"              : 0
+    }]
+    
+}
+    

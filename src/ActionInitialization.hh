@@ -35,14 +35,15 @@
 #define ActionInitialization_h 1
 
 #include "G4VUserActionInitialization.hh"
+#include "SimConfiguration.hh"
+#include <memory>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 class ActionInitialization : public G4VUserActionInitialization
 {
 public:
-  
-  ActionInitialization();
+  ActionInitialization(std::shared_ptr<SimConfiguration> simConf);
 
   virtual ~ActionInitialization();
 
@@ -51,6 +52,8 @@ public:
   virtual void BuildForMaster() const;
 
   virtual G4VSteppingVerbose* InitializeSteppingVerbose() const;
+private:
+  std::shared_ptr<SimConfiguration> simConf_;
 
 };
 

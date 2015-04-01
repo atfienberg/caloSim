@@ -36,6 +36,7 @@
 #include "G4Material.hh"
 
 #include "G4LogicalVolume.hh"
+#include "SimConfiguration.hh"
 
 #include <vector>
 #include <memory>
@@ -47,12 +48,13 @@ class G4LogicalVolume;
 
 class DetectorConstruction : public G4VUserDetectorConstruction
 {
-  public:
-    DetectorConstruction();
-    virtual ~DetectorConstruction();
-
-    virtual G4VPhysicalVolume* Construct();
+public:
+  DetectorConstruction(std::shared_ptr<SimConfiguration> simConf);
+  virtual ~DetectorConstruction();
   
+  virtual G4VPhysicalVolume* Construct();
+private:
+  std::shared_ptr<SimConfiguration> simConf_;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

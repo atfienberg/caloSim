@@ -37,6 +37,7 @@
 #include "G4UserRunAction.hh"
 #include "G4ThreeVector.hh"
 #include "G4Run.hh"
+#include "SimConfiguration.hh"
 #include "TTree.h"
 #include "TFile.h"
 #include "TH2.h"
@@ -44,7 +45,7 @@
 
 class Run : public G4Run{
 public:
-  Run();
+  Run(std::shared_ptr<SimConfiguration> simConf);
   virtual ~Run();
   
   void initializeTreeAndHist();
@@ -52,8 +53,12 @@ public:
   void fillHists(const G4ThreeVector& pos, G4double eDep);
   void closeFile();
 
-  void accountEdep(G4int crystalId, G4double eDep) {crystalDeps_[crystalId] += eDep; }
-  void zeroEDeps() { for(int i = 0; i < 54; crystalDeps_[i++] = 0); }
+  void zeroEDeps();
+  
+  void accountEdep(G4int crystalId, G4double eDep);
+  void accountLateral(G4double eDep) {lateralLeakage_ += eDep;}
+  void accountAlbedo(G4double eDep) {albedo_ += eDep;}
+  void accountLongitudinal(G4double eDep) {longitudinalLeakage_ += eDep;}
 
 private:
   TTree* t_;
@@ -61,14 +66,21 @@ private:
   TH2D* radialHist_;
   TH2D* radialLongitudinalHist_;
   TFile* file_;
+
   double crystalDeps_[54];
+  double totalDep_;
+  double lateralLeakage_;
+  double albedo_;
+  double longitudinalLeakage_;
+
+  std::shared_ptr<SimConfiguration> simConf_;
 };
 
 class RunAction : public G4UserRunAction
 {
 public:
   
-  RunAction();
+  RunAction(std::shared_ptr<SimConfiguration> simConf);
   virtual ~RunAction();
 
   virtual G4Run* GenerateRun();  
@@ -77,6 +89,7 @@ public:
 
 private:
   Run* theRun_;
+  std::shared_ptr<SimConfiguration> simConf_;
 };
 
 

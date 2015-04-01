@@ -40,26 +40,17 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-PrimaryGeneratorAction::PrimaryGeneratorAction ()
+PrimaryGeneratorAction::PrimaryGeneratorAction (std::shared_ptr<SimConfiguration> simConf)
 :G4VUserPrimaryGeneratorAction(), 
- fParticleGun(0)
+ particleGun_(new G4ParticleGun(1)),
+ simConf_(simConf)
 {
-  G4int n_particle = 1;
-  fParticleGun = new G4ParticleGun(n_particle);
-
-  G4ParticleDefinition* particle
-    = G4ParticleTable::GetParticleTable()->FindParticle("e-");
-  fParticleGun->SetParticleDefinition(particle);
-  fParticleGun->SetParticleEnergy(3.*GeV);  
-  fParticleGun->SetParticlePosition(G4ThreeVector(0.,0.,-10*cm));  
-  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
 {
-  delete fParticleGun;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -68,8 +59,15 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
   //this function is called at the begin of event
   //
-  fParticleGun->SetParticlePosition(G4ThreeVector(0.*cm,0.*cm,-10*cm));     
-  fParticleGun->GeneratePrimaryVertex(anEvent);
+  for(const auto& conf : simConf_->genVector){
+    G4ParticleDefinition* particle
+      = G4ParticleTable::GetParticleTable()->FindParticle(conf.particleType);
+    particleGun_->SetParticleDefinition(particle);
+    particleGun_->SetParticleEnergy(conf.energy);  
+    particleGun_->SetParticlePosition(G4ThreeVector(conf.posX,conf.posY,-10*cm));  
+    particleGun_->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
+    particleGun_->GeneratePrimaryVertex(anEvent);
+  }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -34,10 +34,12 @@
 #include "SteppingVerbose.hh"
 #include "RunAction.hh"
 #include "EventAction.hh"
+#include "SteppingAction.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-ActionInitialization::ActionInitialization()
+ActionInitialization::ActionInitialization(std::shared_ptr<SimConfiguration> simConf):
+simConf_(simConf)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -49,10 +51,8 @@ ActionInitialization::~ActionInitialization()
 
 void ActionInitialization::Build() const
 {
-
-  PrimaryGeneratorAction* kin = new PrimaryGeneratorAction();
-  SetUserAction(kin);
-  SetUserAction(new RunAction);
+  SetUserAction(new PrimaryGeneratorAction(simConf_));
+  SetUserAction(new RunAction(simConf_));
   SetUserAction(new EventAction);
   SetUserAction(new SteppingAction);
 }

@@ -23,7 +23,6 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file electromagnetic/TestEm2/include/EventAction.hh
 /// \brief Definition of the EventAction class
 //
 // $Id: EventAction.hh 78550 2014-01-07 09:43:41Z gcosmo $
@@ -35,10 +34,6 @@
 #define EventAction_h 1
 
 #include "G4UserEventAction.hh"
-#include "G4UserSteppingAction.hh"
-#include "globals.hh"
-
-class G4Event;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -50,15 +45,6 @@ public:
   virtual ~EventAction();
 
   virtual void EndOfEventAction(const G4Event*);
-};
-
-class SteppingAction : public G4UserSteppingAction
-{
-public:
-  SteppingAction();
-  virtual ~SteppingAction();
-
-  virtual void UserSteppingAction(const G4Step*);
 };
 
 
