@@ -17,8 +17,8 @@ const GeneratorConfiguration SimConfiguration::defaultGen = {
   3000, //energy 				     
   0,    //impact x
   0,    //impact y
-  0,    //angle x
-  0 }; //angle y
+  0,    //impactAngle
+  0 }; //pPhiHat
 
 SimConfiguration::SimConfiguration():
   calo(defaultCalo),
@@ -73,10 +73,10 @@ SimConfiguration::SimConfiguration(std::string conf):
       updateFromConfig(optType, thisPrimary.particleType);
       auto optEnergy = thisGenTree.get_optional<double>("energy");
       updateFromConfig(optEnergy, thisPrimary.energy);
-      auto optAngleX = thisGenTree.get_optional<double>("angleX");
-      updateFromConfig(optAngleX, thisPrimary.angleX);
-      auto optAngleY = thisGenTree.get_optional<double>("angleY");
-      updateFromConfig(optAngleY, thisPrimary.angleY);
+      auto optImpactAngle = thisGenTree.get_optional<double>("impactAngle");
+      updateFromConfig(optImpactAngle, thisPrimary.impactAngle);
+      auto optPPhiHat = thisGenTree.get_optional<double>("pPhiHat");
+      updateFromConfig(optPPhiHat, thisPrimary.pPhiHat);
 
       //impact position needs to be treated specially because it is an array (x, y)
       auto impactPositionOpt = thisGenTree.get_child_optional("impactPosition");

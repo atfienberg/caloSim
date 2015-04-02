@@ -32,11 +32,12 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #include "PrimaryGeneratorAction.hh"
-
 #include "G4Event.hh"
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4SystemOfUnits.hh"
+#include <cmath>
+#include <iostream>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -57,15 +58,35 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
-  //this function is called at the begin of event
-  //
+  double startingZ = -0.75*simConf_->calo.length;
   for(const auto& conf : simConf_->genVector){
     G4ParticleDefinition* particle
       = G4ParticleTable::GetParticleTable()->FindParticle(conf.particleType);
     particleGun_->SetParticleDefinition(particle);
     particleGun_->SetParticleEnergy(conf.energy);  
-    particleGun_->SetParticlePosition(G4ThreeVector(conf.posX,conf.posY,-10*cm));  
-    particleGun_->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
+
+    G4ThreeVector startingPosition(G4ThreeVector(conf.posX,conf.posY,startingZ));    
+    if(conf.impactAngle == 0){
+      particleGun_->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
+      particleGun_->SetParticlePosition(startingPosition);
+    }
+    
+    else{
+      particleGun_->
+	SetParticleMomentumDirection(G4ThreeVector(std::sin(conf.impactAngle*deg)*std::cos(conf.pPhiHat*deg),
+						   std::sin(conf.impactAngle*deg)*std::sin(conf.pPhiHat*deg),
+						   std::cos(conf.impactAngle*deg)));
+
+      G4ThreeVector startingPositionCorrection(std::tan(conf.impactAngle*deg)*std::cos(conf.pPhiHat*deg),
+					       std::tan(conf.impactAngle*deg)*std::sin(conf.pPhiHat*deg),
+					       0);
+      
+      startingPosition = startingPosition + 
+	(startingZ + 0.5*simConf_->calo.length)*startingPositionCorrection;
+      particleGun_->SetParticlePosition(startingPosition);
+    }
+						   
+      
     particleGun_->GeneratePrimaryVertex(anEvent);
   }
 }

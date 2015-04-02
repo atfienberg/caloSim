@@ -17,8 +17,8 @@ typedef struct{
   double energy;
   double posX;
   double posY;
-  double angleX;
-  double angleY;
+  double impactAngle;
+  double pPhiHat;
 } GeneratorConfiguration;
 
 class SimConfiguration{
