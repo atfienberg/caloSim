@@ -8,27 +8,28 @@
     },
     
     "generatorList": 
-    [{
+        [{
 	"particleType"        : "e+",
-	"energy"              : 3000,
+	"energy"              : "3000",
 	"impactPosition"      : [0, 0],
-	"angleX"              : 0,
-	"angleY"              : 0
-    },
-    {
+	"impactAngle"         : 0,
+	"pPhiHat"             : 0
+	},
+	{
 	"particleType"        : "e+",
-	"energy"              : 3000,
-	"impactPosition"      : [60, 0],
-	"angleX"              : 0,
-	"angleY"              : 0
-    },
-    {
+	"energy"              : "3000",
+	"impactPosition"      : [-20, -13],
+	"impactAngle"         : 0,
+	"pPhiHat"             : 0
+	},
+	{
 	"particleType"        : "e+",
-	"energy"              : 1500,
-	"impactPosition"      : [35, 23],
-	"angleX"              : 0,
-	"angleY"              : 0
-    }]
+	"energy"              : "3000",
+	"impactPosition"      : [50, 20],
+	"impactAngle"         : 0,
+	"pPhiHat"             : 0
+	}]
+
     
 }
     

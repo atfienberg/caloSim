@@ -38,18 +38,22 @@
 #include "PhysicsList.hh"
 #include "ActionInitialization.hh"
 #include "SteppingVerbose.hh"
-#include <iostream>
-#include <ctime>
 
 #include "G4VisExecutive.hh"
-
 #include "G4UIExecutive.hh"
+
+#include "SimConfiguration.hh"
+
+#include <iostream>
+#include <ctime>
+#include <memory>
 
 using namespace std;
 
 int main(int argc,char** argv) {
 
   //choose the Random engine
+  G4Random::setTheEngine(new CLHEP::RanecuEngine);
   long seeds[2];
   seeds[0] = (long) time(NULL);
   seeds[1] = (long) (seeds[0] * G4UniformRand());
@@ -59,18 +63,14 @@ int main(int argc,char** argv) {
   G4VSteppingVerbose::SetInstance(new SteppingVerbose);
 
   // Construct the default run manager
-  G4RunManager * runManager = new G4RunManager;
+  unique_ptr<G4RunManager> runManager(new G4RunManager);
+  
+  auto simConf = std::make_shared<SimConfiguration>("simConfiguration.json");
 
-  // set mandatory initialization classes
-  DetectorConstruction* detector;
-  detector = new DetectorConstruction;
-  runManager->SetUserInitialization(detector);
+  //initialization classes
+  runManager->SetUserInitialization(new DetectorConstruction(simConf));
   runManager->SetUserInitialization(new PhysicsList());
-
-  // set user action classes
-  //
-  //action intialization
-  runManager->SetUserInitialization(new ActionInitialization());
+  runManager->SetUserInitialization(new ActionInitialization(simConf));
 
    
   // get the pointer to the User Interface manager 
@@ -84,26 +84,15 @@ int main(int argc,char** argv) {
     }
     
   else           //define visualization and UI terminal for interactive mode
-    { 
-      
-      G4VisManager* visManager = new G4VisExecutive;
+    {       
+      unique_ptr<G4VisManager> visManager(new G4VisExecutive);
       visManager->Initialize();
       cout << "vis initializing" << endl;
-     
       
-      G4UIExecutive * ui = new G4UIExecutive(argc,argv);      
+      
+      unique_ptr<G4UIExecutive> ui(new G4UIExecutive(argc,argv));      
       ui->SessionStart();
-      delete ui;
-      
-          
-      
-     delete visManager;
-     
-    }
-    
-  // job termination
-  // 
-  delete runManager;
+    }   
 
   return 0;
 }

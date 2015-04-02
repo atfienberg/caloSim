@@ -20,15 +20,18 @@ add_executable(runSim ${PROJECT_SOURCE_DIR}/runSim.cc ${sources} ${headers})
 
 target_link_libraries (runSim ${ROOT_LIBRARIES} ${Geant4_LIBRARIES})
 
-set(SCRIPTS
+set(TXTFILES
   vis.mac
   do10k.mac
+  do500.mac
+  simConfiguration.json
+  simConfigurationMultipleParticles.json
   )
 
-foreach(_script ${SCRIPTS})
+foreach(_file ${TXTFILES})
   configure_file(
-    ${PROJECT_SOURCE_DIR}/${_script}
-    ${PROJECT_BINARY_DIR}/${_script}
+    ${PROJECT_SOURCE_DIR}/${_file}
+    ${PROJECT_BINARY_DIR}/${_file}
     COPYONLY
     )
 endforeach()

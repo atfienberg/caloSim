@@ -26,12 +26,18 @@ public:
   SimConfiguration();
   SimConfiguration(std::string);
   
+  void update();
+  
   CalorimeterConfiguration calo;
   std::vector<GeneratorConfiguration> genVector;
 
   static const CalorimeterConfiguration defaultCalo;
   
   static const GeneratorConfiguration defaultGen;
+
+private:
+  void readConfig();
+  std::string confFile_;		  
 };
   
 

@@ -37,8 +37,19 @@ void updateFromConfig(boost::optional<T> opt, T& oldValue){
 SimConfiguration::SimConfiguration(std::string conf):
   SimConfiguration()
 {
+  confFile_ = conf;
+  readConfig();
+}
+ 
+void SimConfiguration::update(){
+  if(confFile_.size() != 0){
+    readConfig();
+  }
+}
+
+void SimConfiguration::readConfig(){
   boost::property_tree::ptree fullTree;
-  read_json(conf, fullTree);
+  read_json(confFile_, fullTree);
   
   //read calo tree
   auto calTreeOpt = fullTree.get_child_optional("calorimeter");
@@ -99,5 +110,3 @@ SimConfiguration::SimConfiguration(std::string conf):
     }
   }
 }
-  
-  

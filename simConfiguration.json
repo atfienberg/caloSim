@@ -12,8 +12,8 @@
 	"particleType"        : "e+",
 	"energy"              : "3000",
 	"impactPosition"      : [0, 0],
-	"angleX"              : 0,
-	"angleY"              : 0
+	"impactAngle"         : 0,
+	"pPhiHat"             : 0
     }]
     
 }
