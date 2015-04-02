@@ -39,23 +39,39 @@
 #include "G4EmLowEPPhysics.hh"
 
 #include "G4DecayPhysics.hh"
+#include "G4EmExtraPhysics.hh"
 
 #include "G4LossTableManager.hh"
 #include "G4ProcessManager.hh"
 
+#include "G4String.hh"
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
 
+#include <iostream>
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-PhysicsList::PhysicsList() 
- : G4VModularPhysicsList(),fEmPhysicsList(0),fDecay(0)
+PhysicsList::PhysicsList(std::shared_ptr<SimConfiguration> simConf) 
+  : 
+  G4VModularPhysicsList(),
+  simConf_(simConf)
 {
   SetVerboseLevel(1);
 
   // EM physics
-  fEmPhysicsList = new G4EmStandardPhysics_option3();
-  fDecay = new G4DecayPhysics();
+  emPhysicsList.reset(new G4EmStandardPhysics_option3());
+  decayPhysicsList.reset(new G4DecayPhysics());
+  emExtraPhysicsList.reset(new G4EmExtraPhysics());
+
+  
+  G4EmExtraPhysics* extraP = static_cast<G4EmExtraPhysics*>(emExtraPhysicsList.get());
+  G4String on = "on";
+  G4String off = "off";
+
+  extraP->Synch(off);
+  extraP->GammaNuclear(on);
+  extraP->MuonNuclear(off);
   
   G4LossTableManager::Instance();
   SetDefaultCutValue(1*mm);  
@@ -65,16 +81,18 @@ PhysicsList::PhysicsList()
 
 PhysicsList::~PhysicsList()
 {
-  delete fEmPhysicsList;
-  delete fDecay;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void PhysicsList::ConstructParticle()
 {
-  fEmPhysicsList->ConstructParticle();
-  fDecay->ConstructParticle();
+  emPhysicsList->ConstructParticle();
+  decayPhysicsList->ConstructParticle();
+
+  if(simConf_->phys.emExtra){
+    emExtraPhysicsList->ConstructParticle();
+  }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -87,12 +105,16 @@ void PhysicsList::ConstructProcess()
   
   // electromagnetic physics list
   //
-  fEmPhysicsList->ConstructProcess();
+  emPhysicsList->ConstructProcess();
   
   // decay process
   //
-  fDecay->ConstructProcess();
+  decayPhysicsList->ConstructProcess();
  
+  
+  if(simConf_->phys.emExtra){
+    emExtraPhysicsList->ConstructProcess();
+  }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

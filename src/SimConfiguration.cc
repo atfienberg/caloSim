@@ -19,10 +19,14 @@ const GeneratorConfiguration SimConfiguration::defaultGen = {
   0,    //impact y
   0,    //impactAngle
   0 }; //pPhiHat
+const PhysicsConfiguration SimConfiguration::defaultPhys = { 
+  false //em extra physics
+};
 
 SimConfiguration::SimConfiguration():
   calo(defaultCalo),
-  genVector(0)
+  genVector(0),
+  phys(defaultPhys)
 {
   genVector.push_back(defaultGen);
 }
@@ -108,5 +112,14 @@ void SimConfiguration::readConfig(){
 	}	
       }
     }
+  }
+
+  //read physics tree
+  auto physTreeOpt = fullTree.get_child_optional("physics");
+  if(physTreeOpt){
+    auto physTree = *physTreeOpt;
+
+    auto optEmExtra = physTree.get_optional<bool>("emExtra");
+    updateFromConfig(optEmExtra, phys.emExtra);
   }
 }

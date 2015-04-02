@@ -63,8 +63,8 @@ void Run::initializeTreeAndHist(){
   
   radialHist_ = new TH2D("xyhist", "xyhist", 250, -112.5, 112.5, 100, -(75 - 12.5), 75+12.5);
   radialLongitudinalHist_ = new TH2D("radLongHist", "radLongHist", 250, 0, 140, 50, 0, 50);
-  particleProcessHist_ = new TH2D("particleProcessHist", "particleProcessHist", 10, 0.0, 0.0,
-				  10, 0.0, 0.0);
+  particleProcessHist_ = new TH2D("particleProcessHist", "particleProcessHist", 100, 0.0, 0.0,
+				  100, 0.0, 0.0);
 
   zeroEDeps();
 

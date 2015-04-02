@@ -21,6 +21,10 @@ typedef struct{
   double pPhiHat;
 } GeneratorConfiguration;
 
+typedef struct{
+  bool emExtra;
+} PhysicsConfiguration;
+
 class SimConfiguration{
 public:
   SimConfiguration();
@@ -30,10 +34,13 @@ public:
   
   CalorimeterConfiguration calo;
   std::vector<GeneratorConfiguration> genVector;
+  PhysicsConfiguration phys;
 
   static const CalorimeterConfiguration defaultCalo;
   
   static const GeneratorConfiguration defaultGen;
+
+  static const PhysicsConfiguration defaultPhys;
 
 private:
   void readConfig();

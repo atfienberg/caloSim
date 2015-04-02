@@ -40,22 +40,27 @@
 #define PhysicsList_h 1
 
 #include "G4VModularPhysicsList.hh"
+#include <memory>
 #include "globals.hh"
+#include "SimConfiguration.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 class PhysicsList: public G4VModularPhysicsList
 {
 public:
-  PhysicsList();
+  PhysicsList(std::shared_ptr<SimConfiguration> simConf);
   virtual ~PhysicsList();
 
   virtual void ConstructParticle();
   virtual void ConstructProcess();
 
 private:
-  G4VPhysicsConstructor* fEmPhysicsList;    
-  G4VPhysicsConstructor* fDecay;    
+  std::unique_ptr<G4VPhysicsConstructor> emPhysicsList;
+  std::unique_ptr<G4VPhysicsConstructor> decayPhysicsList;
+  std::unique_ptr<G4VPhysicsConstructor> emExtraPhysicsList;
+
+  std::shared_ptr<SimConfiguration> simConf_;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
