@@ -4,6 +4,7 @@
 #include "Randomize.hh"
 #include "G4RunManager.hh"
 #include "G4SystemOfUnits.hh"
+#include <time.h>
 #include <cmath>
 #include <iostream>
 #include <string>
@@ -24,6 +25,7 @@ G4Run* RunAction::GenerateRun(){
 }
 
 void RunAction::BeginOfRunAction(const G4Run*){
+  simConf_->update();
   theRun_->initializeTreeAndHist();
 }
 
@@ -42,13 +44,18 @@ Run::~Run(){
 void Run::initializeTreeAndHist(){
   int nRows = simConf_->calo.nRows;
   int nCols = simConf_->calo.nCols;
-
-  int rand = G4UniformRand()*1000000;
   
   int nEvents = G4RunManager::GetRunManager()->GetNumberOfEventsToBeProcessed();
-  
-  std::string fileName = "out_" + std::to_string(nEvents) +"_events_" + std::to_string(rand) + ".root";
 
+  time_t rawtime;
+  struct tm* timeinfo;
+  char buffer[80];
+  time (&rawtime);
+  timeinfo = localtime (&rawtime);
+
+  strftime(buffer,80,"%F_%H_%M_%S",timeinfo);
+  
+  std::string fileName = "out_" + std::to_string(nEvents) +"_events_" + std::string(buffer) + ".root";
 
   file_ = new TFile(fileName.c_str(), "recreate");
   t_ = new TTree("t","t");
