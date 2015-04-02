@@ -35,6 +35,7 @@
 #include "RunAction.hh"
 #include "EventAction.hh"
 #include "SteppingAction.hh"
+#include "StackingAction.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -55,6 +56,8 @@ void ActionInitialization::Build() const
   SetUserAction(new RunAction(simConf_));
   SetUserAction(new EventAction);
   SetUserAction(new SteppingAction);
+  SetUserAction(new StackingAction);
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

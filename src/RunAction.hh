@@ -41,6 +41,7 @@
 #include "TTree.h"
 #include "TFile.h"
 #include "TH2.h"
+#include <string>
 #include <memory>
 
 class Run : public G4Run{
@@ -51,6 +52,7 @@ public:
   void initializeTreeAndHist();
   void recordEndOfEvent();
   void fillHists(const G4ThreeVector& pos, G4double eDep);
+  void recordParticleProcess(std::string particle, std::string process);
   void closeFile();
 
   void zeroEDeps();
@@ -65,6 +67,7 @@ private:
   TH2D* crystalHist_;
   TH2D* radialHist_;
   TH2D* radialLongitudinalHist_;
+  TH2D* particleProcessHist_;
   TFile* file_;
 
   double crystalDeps_[54];
