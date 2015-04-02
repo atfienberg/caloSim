@@ -14,7 +14,11 @@
 	"impactPosition"      : [0, 0],
 	"impactAngle"         : 0,
 	"pPhiHat"             : 0
-    }]
+    }],
+
+    "physics" : {
+	"emExtra" : false
+    }
     
 }
     
