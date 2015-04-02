@@ -69,7 +69,7 @@ int main(int argc,char** argv) {
 
   //initialization classes
   runManager->SetUserInitialization(new DetectorConstruction(simConf));
-  runManager->SetUserInitialization(new PhysicsList());
+  runManager->SetUserInitialization(new PhysicsList(simConf));
   runManager->SetUserInitialization(new ActionInitialization(simConf));
 
    
