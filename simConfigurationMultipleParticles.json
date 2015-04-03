@@ -13,14 +13,14 @@
 	"energy"              : "3000",
 	"impactPosition"      : [0, 0],
 	"impactAngle"         : 0,
-	"pPhiHat"             : 0
+	"impactPhi"             : 0
     },
     {
 	"particleType"        : "e+",
 	"energy"              : "3000",
 	"impactPosition"      : [30, 0],
 	"impactAngle"         : -5,
-	"pPhiHat"             : 0
+	"impactPhi"             : 0
     }],
 
     "physics" : {

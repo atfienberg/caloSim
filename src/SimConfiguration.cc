@@ -18,7 +18,7 @@ const GeneratorConfiguration SimConfiguration::defaultGen = {
   0,    //impact x
   0,    //impact y
   0,    //impactAngle
-  0 }; //pPhiHat
+  0 }; //impactPhi
 const PhysicsConfiguration SimConfiguration::defaultPhys = { 
   false //em extra physics
 };
@@ -90,8 +90,8 @@ void SimConfiguration::readConfig(){
       updateFromConfig(optEnergy, thisPrimary.energy);
       auto optImpactAngle = thisGenTree.get_optional<double>("impactAngle");
       updateFromConfig(optImpactAngle, thisPrimary.impactAngle);
-      auto optPPhiHat = thisGenTree.get_optional<double>("pPhiHat");
-      updateFromConfig(optPPhiHat, thisPrimary.pPhiHat);
+      auto optPPhiHat = thisGenTree.get_optional<double>("impactPhi");
+      updateFromConfig(optPPhiHat, thisPrimary.impactPhi);
 
       //impact position needs to be treated specially because it is an array (x, y)
       auto impactPositionOpt = thisGenTree.get_child_optional("impactPosition");

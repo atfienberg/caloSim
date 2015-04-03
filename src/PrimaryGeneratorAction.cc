@@ -73,12 +73,12 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     
     else{
       particleGun_->
-	SetParticleMomentumDirection(G4ThreeVector(std::sin(conf.impactAngle*deg)*std::cos(conf.pPhiHat*deg),
-						   std::sin(conf.impactAngle*deg)*std::sin(conf.pPhiHat*deg),
+	SetParticleMomentumDirection(G4ThreeVector(std::sin(conf.impactAngle*deg)*std::cos(conf.impactPhi*deg),
+						   std::sin(conf.impactAngle*deg)*std::sin(conf.impactPhi*deg),
 						   std::cos(conf.impactAngle*deg)));
 
-      G4ThreeVector startingPositionCorrection(std::tan(conf.impactAngle*deg)*std::cos(conf.pPhiHat*deg),
-					       std::tan(conf.impactAngle*deg)*std::sin(conf.pPhiHat*deg),
+      G4ThreeVector startingPositionCorrection(std::tan(conf.impactAngle*deg)*std::cos(conf.impactPhi*deg),
+					       std::tan(conf.impactAngle*deg)*std::sin(conf.impactPhi*deg),
 					       0);
       
       startingPosition = startingPosition + 

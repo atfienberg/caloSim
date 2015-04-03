@@ -18,7 +18,7 @@ typedef struct{
   double posX;
   double posY;
   double impactAngle;
-  double pPhiHat;
+  double impactPhi;
 } GeneratorConfiguration;
 
 typedef struct{
