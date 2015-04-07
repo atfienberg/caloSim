@@ -46,6 +46,7 @@
 
 #include <iostream>
 #include <ctime>
+#include <cstdlib>
 #include <memory>
 
 using namespace std;
@@ -58,6 +59,8 @@ int main(int argc,char** argv) {
   seeds[0] = (long) time(NULL);
   seeds[1] = (long) (seeds[0] * G4UniformRand());
   CLHEP::HepRandom::setTheSeeds(seeds);
+
+
 
   //my Verbose output class
   G4VSteppingVerbose::SetInstance(new SteppingVerbose);

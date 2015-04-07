@@ -71,7 +71,7 @@ PhysicsList::PhysicsList(std::shared_ptr<SimConfiguration> simConf)
 
   extraP->Synch(off);
   extraP->GammaNuclear(on);
-  extraP->MuonNuclear(off);
+  extraP->MuonNuclear(on);
   
   G4LossTableManager::Instance();
   SetDefaultCutValue(1*mm);  
