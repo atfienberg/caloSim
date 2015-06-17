@@ -7,12 +7,14 @@
 
 //default values
 const CalorimeterConfiguration SimConfiguration::defaultCalo = { 
-  6, //nrows
-  9, //ncolumns
-  25, //width
-  25, //height
-  140 }; //length
+  6,     //nrows
+  9,     //ncolumns
+  25,    //width
+  25,    //height
+  140,   //length
+  true}; //field 
 const GeneratorConfiguration SimConfiguration::defaultGen = { 
+  false, //randomize
   "e+", //particle type
   3000, //energy 				     
   0,    //impact x
@@ -70,6 +72,8 @@ void SimConfiguration::readConfig(){
     updateFromConfig(optHeight, calo.height);
     auto optLength = calTree.get_optional<double>("length");
     updateFromConfig(optLength, calo.length);
+    auto optField = calTree.get_optional<bool>("field");
+    updateFromConfig(optField, calo.field);
   }
 
   //read generator tree
@@ -83,7 +87,9 @@ void SimConfiguration::readConfig(){
       auto& thisPrimary = genVector[genVector.size() - 1];
       
       auto thisGenTree = tree.second;
-      
+
+      auto optBool = thisGenTree.get_optional<bool>("randomize");
+      updateFromConfig(optBool, thisPrimary.randomize);
       auto optType = thisGenTree.get_optional<std::string>("particleType");
       updateFromConfig(optType, thisPrimary.particleType);
       auto optEnergy = thisGenTree.get_optional<double>("energy");

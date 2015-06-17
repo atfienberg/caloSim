@@ -4,16 +4,18 @@
 	"nColumns" : 9,
 	"width"    : 25,
 	"height"   : 25,
-	"length"   :140
+	"length"   :140,
+	"field"    :true
     },
     
     "generatorList": 
     [{
+	"randomize"           : false,
 	"particleType"        : "e+",
-	"energy"              : "3000",
+	"energy"              : "2500",
 	"impactPosition"      : [0, 0],
 	"impactAngle"         : 0,
-	"impactPhi"             : 0
+	"impactPhi"           : 0
     }],
 
     "physics" : {

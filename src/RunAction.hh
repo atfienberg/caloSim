@@ -42,6 +42,7 @@
 #include "TFile.h"
 #include "TH2.h"
 #include <string>
+#include <vector>
 #include <memory>
 
 class Run : public G4Run{
@@ -61,6 +62,7 @@ public:
   void accountLateral(G4double eDep) {lateralLeakage_ += eDep;}
   void accountAlbedo(G4double eDep) {albedo_ += eDep;}
   void accountLongitudinal(G4double eDep) {longitudinalLeakage_ += eDep;}
+  void registerPositron(G4double impactX, G4double impactY, G4double energy);
 
 private:
   TTree* t_;
@@ -70,11 +72,16 @@ private:
   TH2D* particleProcessHist_;
   TFile* file_;
 
-  double crystalDeps_[54];
-  double totalDep_;
-  double lateralLeakage_;
-  double albedo_;
-  double longitudinalLeakage_;
+  G4double crystalDeps_[54];
+  G4double totalDep_;
+  G4double lateralLeakage_;
+  G4double albedo_;
+  G4double longitudinalLeakage_;
+
+  //generator info
+  G4double nPositrons_;
+  std::vector<G4double> positions_;
+  std::vector<G4double> energies_;
 
   std::shared_ptr<SimConfiguration> simConf_;
 };

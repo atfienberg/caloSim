@@ -73,6 +73,9 @@ void Run::initializeTreeAndHist(){
   t_->Branch("lateralLeakage", &lateralLeakage_, "lateralLeakage/D");
   t_->Branch("albedo", &albedo_, "albedo/D");
   t_->Branch("longitudinalLeakage", &longitudinalLeakage_, "longitudinalLeakage/D");
+  t_->Branch("nPositrons", &nPositrons_, "nPositrons/D");
+  t_->Branch("positronPositions", &positions_);
+  t_->Branch("positronEnergies", &energies_);
 }
 
 void Run::recordEndOfEvent(){
@@ -111,9 +114,19 @@ void Run::zeroEDeps(){
   lateralLeakage_ = 0;  
   albedo_ = 0;
   longitudinalLeakage_ = 0;
+  nPositrons_ = 0;
+  positions_.resize(0);
+  energies_.resize(0);
 }
 
 void Run::accountEdep(G4int crystalId, G4double eDep){
   crystalDeps_[crystalId] += eDep; 
   totalDep_ += eDep;
+}
+
+void Run::registerPositron(G4double impactX, G4double impactY, G4double energy){
+  ++nPositrons_;
+  positions_.push_back(impactX);
+  positions_.push_back(impactY);
+  energies_.push_back(energy);
 }

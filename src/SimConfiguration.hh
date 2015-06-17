@@ -10,9 +10,11 @@ typedef struct{
   double width;
   double height;
   double length;
+  bool field;
 } CalorimeterConfiguration;
 
-typedef struct{
+typedef struct{  
+  bool randomize;
   std::string particleType;
   double energy;
   double posX;

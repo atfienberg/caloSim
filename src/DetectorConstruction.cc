@@ -41,6 +41,7 @@
 #include "G4PVPlacement.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4String.hh"
+#include "G4GlobalMagFieldMessenger.hh"
 #include <iostream>
 #include <cstdlib>
 
@@ -209,6 +210,11 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 
   //
+  if(simConf_->calo.field){
+    G4ThreeVector field(0.0, 1.0 * tesla, 0.0);
+    G4GlobalMagFieldMessenger* fMes = new G4GlobalMagFieldMessenger(field);
+    fMes->SetVerboseLevel(1);
+  }
   
   return physWorld;
 }

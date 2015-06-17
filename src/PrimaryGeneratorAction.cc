@@ -31,8 +31,10 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+#include "RunAction.hh"
 #include "PrimaryGeneratorAction.hh"
 #include "G4Event.hh"
+#include "G4RunManager.hh"
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4SystemOfUnits.hh"
@@ -58,14 +60,21 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
+  Run* run =  
+    static_cast<Run*>(G4RunManager::GetRunManager()->GetNonConstCurrentRun());
+
   double startingZ = -0.75*simConf_->calo.length;
   for(const auto& conf : simConf_->genVector){
+    double posX = conf.posX;
+    double posY = conf.posY;
+    double energy = conf.energy;
+
     G4ParticleDefinition* particle
       = G4ParticleTable::GetParticleTable()->FindParticle(conf.particleType);
     particleGun_->SetParticleDefinition(particle);
-    particleGun_->SetParticleEnergy(conf.energy);  
+    particleGun_->SetParticleEnergy(energy);  
 
-    G4ThreeVector startingPosition(G4ThreeVector(conf.posX,conf.posY,startingZ));    
+    G4ThreeVector startingPosition(G4ThreeVector(posX,posY,startingZ));    
     if(conf.impactAngle == 0){
       particleGun_->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
       particleGun_->SetParticlePosition(startingPosition);
@@ -88,6 +97,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 						   
       
     particleGun_->GeneratePrimaryVertex(anEvent);
+    run->registerPositron(posX, posY, energy);
   }
 }
 
