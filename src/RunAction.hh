@@ -80,8 +80,8 @@ private:
 
   //generator info
   G4int nPositrons_;
-  std::vector<G4double> positions_;
-  std::vector<G4double> energies_;
+  G4double positions_[4];
+  G4double energies_[4];
 
   std::shared_ptr<SimConfiguration> simConf_;
 };

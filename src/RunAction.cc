@@ -74,8 +74,8 @@ void Run::initializeTreeAndHist(){
   t_->Branch("albedo", &albedo_, "albedo/D");
   t_->Branch("longitudinalLeakage", &longitudinalLeakage_, "longitudinalLeakage/D");
   t_->Branch("nPositrons", &nPositrons_, "nPositrons/I");
-  t_->Branch("positronPositions", &positions_);
-  t_->Branch("positronEnergies", &energies_);
+  t_->Branch("positronPositions", positions_, "positronPositions[4]/D");
+  t_->Branch("positronEnergies", energies_, "positronEnergies[2]/D");
 }
 
 void Run::recordEndOfEvent(){
@@ -115,8 +115,8 @@ void Run::zeroEDeps(){
   albedo_ = 0;
   longitudinalLeakage_ = 0;
   nPositrons_ = 0;
-  positions_.resize(0);
-  energies_.resize(0);
+  for(int i = 0; i < 4; positions_[i++] = 0);
+  for(int i = 0; i < 2; energies_[i++] = 0);
 }
 
 void Run::accountEdep(G4int crystalId, G4double eDep){
@@ -126,7 +126,14 @@ void Run::accountEdep(G4int crystalId, G4double eDep){
 
 void Run::registerPositron(G4double impactX, G4double impactY, G4double energy){
   ++nPositrons_;
-  positions_.push_back(impactX);
-  positions_.push_back(impactY);
-  energies_.push_back(energy);
+  if(energies_[0] == 0){
+    positions_[0] = impactX;
+    positions_[1] = impactY;
+    energies_[0] = energy;
+  }
+  else{
+    positions_[2] = impactX;
+    positions_[3] = impactY;
+    energies_[1] = energy;
+  }
 }
