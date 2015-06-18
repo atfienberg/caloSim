@@ -79,7 +79,7 @@ private:
   G4double longitudinalLeakage_;
 
   //generator info
-  G4double nPositrons_;
+  G4int nPositrons_;
   std::vector<G4double> positions_;
   std::vector<G4double> energies_;
 

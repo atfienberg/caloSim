@@ -64,10 +64,29 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     static_cast<Run*>(G4RunManager::GetRunManager()->GetNonConstCurrentRun());
 
   double startingZ = -0.75*simConf_->calo.length;
-  for(const auto& conf : simConf_->genVector){
-    double posX = conf.posX;
-    double posY = conf.posY;
-    double energy = conf.energy;
+
+  bool first = true;
+  for(const auto& conf : simConf_->genVector){    
+    double posX;
+    double posY;
+    double energy;
+    
+    if(!conf.randomize){  //no randomization
+      posX = conf.posX;
+      posY = conf.posY;
+      energy = conf.energy;
+    }
+    
+    else if ( (!first) && (G4UniformRand() < 0.5) ){ //if not first particle, randomize whether we include it
+      continue;
+    }
+    
+    else{ //if included, randomize positions and energy
+      posX = 100*G4UniformRand() - 100;
+      posY = 75*G4UniformRand() - 37.5;
+      energy = 2800*G4UniformRand() + 200;
+    }
+    first = false;
 
     G4ParticleDefinition* particle
       = G4ParticleTable::GetParticleTable()->FindParticle(conf.particleType);

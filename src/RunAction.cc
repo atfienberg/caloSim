@@ -73,7 +73,7 @@ void Run::initializeTreeAndHist(){
   t_->Branch("lateralLeakage", &lateralLeakage_, "lateralLeakage/D");
   t_->Branch("albedo", &albedo_, "albedo/D");
   t_->Branch("longitudinalLeakage", &longitudinalLeakage_, "longitudinalLeakage/D");
-  t_->Branch("nPositrons", &nPositrons_, "nPositrons/D");
+  t_->Branch("nPositrons", &nPositrons_, "nPositrons/I");
   t_->Branch("positronPositions", &positions_);
   t_->Branch("positronEnergies", &energies_);
 }
