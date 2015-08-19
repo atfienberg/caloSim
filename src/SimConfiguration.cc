@@ -24,11 +24,17 @@ const GeneratorConfiguration SimConfiguration::defaultGen = {
 const PhysicsConfiguration SimConfiguration::defaultPhys = { 
   false //em extra physics
 };
+const WallConfiguration SimConfiguration::defaultWall = {
+  false, //on
+  12,   //distance
+  6.35  //thickness
+};
 
 SimConfiguration::SimConfiguration():
   calo(defaultCalo),
-  genVector(0),
-  phys(defaultPhys)
+  wall(defaultWall),
+  phys(defaultPhys),
+  genVector(0)
 {
   genVector.push_back(defaultGen);
 }
@@ -128,4 +134,19 @@ void SimConfiguration::readConfig(){
     auto optEmExtra = physTree.get_optional<bool>("emExtra");
     updateFromConfig(optEmExtra, phys.emExtra);
   }
+
+  //read wall tree
+  auto wallTreeOpt = fullTree.get_child_optional("wall");
+  if(wallTreeOpt){
+    auto wallTree = *wallTreeOpt;
+    
+    auto optOn = wallTree.get_optional<bool>("on");
+    updateFromConfig(optOn, wall.on);
+
+    auto optDistance = wallTree.get_optional<double>("distance");
+    updateFromConfig(optDistance, wall.distance);
+    
+    auto optThickness = wallTree.get_optional<double>("thickness");
+    updateFromConfig(optThickness, wall.thickness);
+  }    
 }

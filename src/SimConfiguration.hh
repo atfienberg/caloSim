@@ -13,6 +13,12 @@ typedef struct{
   bool field;
 } CalorimeterConfiguration;
 
+typedef struct{
+  bool on;
+  double distance;
+  double thickness;
+} WallConfiguration;
+
 typedef struct{  
   bool randomize;
   std::string particleType;
@@ -35,14 +41,17 @@ public:
   void update();
   
   CalorimeterConfiguration calo;
-  std::vector<GeneratorConfiguration> genVector;
+  WallConfiguration wall;
   PhysicsConfiguration phys;
+  std::vector<GeneratorConfiguration> genVector;
 
   static const CalorimeterConfiguration defaultCalo;
   
   static const GeneratorConfiguration defaultGen;
 
   static const PhysicsConfiguration defaultPhys;
+
+  static const WallConfiguration defaultWall;
 
 private:
   void readConfig();

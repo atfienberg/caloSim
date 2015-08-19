@@ -8,6 +8,10 @@
 	"field"    :false
     },
     
+    "wall": {
+	"on" : true
+    },
+    
     "generatorList": 
     [{
 	"randomize"           : false,

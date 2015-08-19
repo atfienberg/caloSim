@@ -86,7 +86,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4double worldHeight = 2 * nRows * crystalHeight;
   G4double worldWidth = 2 * nCols * crystalWidth;
   G4double worldLength = 2 * crystalLength;
-  G4Material* worldMat = nist->FindOrBuildMaterial("G4_AIR");
+  G4Material* worldMat = nist->FindOrBuildMaterial("G4_Galactic");
   
   G4Box* solidWorld =    
     new G4Box("World",                       //its name
@@ -208,13 +208,38 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   crystalAttr->SetVisibility(true);
   logicalCrystal->SetVisAttributes(crystalAttr);
 
-
-  //
+  //turn on a field
   if(simConf_->calo.field){
     G4ThreeVector field(0.0, 1.0 * tesla, 0.0);
     G4GlobalMagFieldMessenger* fMes = new G4GlobalMagFieldMessenger(field);
     fMes->SetVerboseLevel(1);
   }
+  
+  //build the wall
+  if(simConf_->wall.on){
+    G4Box* solidWall =
+      new G4Box("solidWall",
+		0.5*worldWidth, 0.5*worldHeight, 0.5*simConf_->wall.thickness);
+    
+    G4Material* Al = nist->FindOrBuildMaterial("G4_Al");
+    G4LogicalVolume* logicalWall = new G4LogicalVolume(solidWall,
+						      Al,
+						      "logicalWall");
+    new G4PVPlacement(0,
+		      G4ThreeVector(0, 0, -1*(0.5*crystalLength + simConf_->wall.distance)),
+		      logicalWall,
+		      "wall",
+		      logicWorld,
+		      false,
+		      0,
+		      checkOverlaps);
+
+    G4VisAttributes* wallAttr = new G4VisAttributes(G4Colour::Green());
+    wallAttr->SetForceWireframe(true);
+    wallAttr->SetVisibility(true);
+    logicalWall->SetVisAttributes(wallAttr);
+  }
+		      
   
   return physWorld;
 }
