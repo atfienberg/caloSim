@@ -68,18 +68,17 @@ void SimConfiguration::readConfig(){
   if(calTreeOpt){
     auto calTree = *calTreeOpt;
 
-    auto optNRows = calTree.get_optional<int>("nRows");
-    updateFromConfig(optNRows, calo.nRows);
-    auto optNCols = calTree.get_optional<int>("nColumns");
-    updateFromConfig(optNCols, calo.nCols);
-    auto optWidth = calTree.get_optional<double>("width");
-    updateFromConfig(optWidth, calo.width);
-    auto optHeight = calTree.get_optional<double>("height");
-    updateFromConfig(optHeight, calo.height);
-    auto optLength = calTree.get_optional<double>("length");
-    updateFromConfig(optLength, calo.length);
-    auto optField = calTree.get_optional<bool>("field");
-    updateFromConfig(optField, calo.field);
+    updateFromConfig(calTree.get_optional<int>("nRows"), calo.nRows);
+    
+    updateFromConfig(calTree.get_optional<int>("nColumns"), calo.nCols);
+    
+    updateFromConfig(calTree.get_optional<double>("width"), calo.width);
+    
+    updateFromConfig(calTree.get_optional<double>("height"), calo.height);
+    
+    updateFromConfig(calTree.get_optional<double>("length"), calo.length);
+    
+    updateFromConfig(calTree.get_optional<bool>("field"), calo.field);
   }
 
   //read generator tree
@@ -93,17 +92,17 @@ void SimConfiguration::readConfig(){
       auto& thisPrimary = genVector[genVector.size() - 1];
       
       auto thisGenTree = tree.second;
-
-      auto optBool = thisGenTree.get_optional<bool>("randomize");
-      updateFromConfig(optBool, thisPrimary.randomize);
-      auto optType = thisGenTree.get_optional<std::string>("particleType");
-      updateFromConfig(optType, thisPrimary.particleType);
-      auto optEnergy = thisGenTree.get_optional<double>("energy");
-      updateFromConfig(optEnergy, thisPrimary.energy);
-      auto optImpactAngle = thisGenTree.get_optional<double>("impactAngle");
-      updateFromConfig(optImpactAngle, thisPrimary.impactAngle);
-      auto optPPhiHat = thisGenTree.get_optional<double>("impactPhi");
-      updateFromConfig(optPPhiHat, thisPrimary.impactPhi);
+      
+      updateFromConfig(thisGenTree.get_optional<bool>("randomize"), thisPrimary.randomize);
+      
+      updateFromConfig(thisGenTree.get_optional<std::string>("particleType"), 
+		       thisPrimary.particleType);
+      
+      updateFromConfig(thisGenTree.get_optional<double>("energy"), thisPrimary.energy);
+      
+      updateFromConfig(thisGenTree.get_optional<double>("impactAngle"), thisPrimary.impactAngle);
+      
+      updateFromConfig(thisGenTree.get_optional<double>("impactPhi"), thisPrimary.impactPhi);
 
       //impact position needs to be treated specially because it is an array (x, y)
       auto impactPositionOpt = thisGenTree.get_child_optional("impactPosition");
@@ -130,23 +129,19 @@ void SimConfiguration::readConfig(){
   auto physTreeOpt = fullTree.get_child_optional("physics");
   if(physTreeOpt){
     auto physTree = *physTreeOpt;
-
-    auto optEmExtra = physTree.get_optional<bool>("emExtra");
-    updateFromConfig(optEmExtra, phys.emExtra);
+    
+    updateFromConfig(physTree.get_optional<bool>("emExtra"), phys.emExtra);
   }
 
   //read wall tree
   auto wallTreeOpt = fullTree.get_child_optional("wall");
   if(wallTreeOpt){
     auto wallTree = *wallTreeOpt;
+        
+    updateFromConfig(wallTree.get_optional<bool>("on"), wall.on);
     
-    auto optOn = wallTree.get_optional<bool>("on");
-    updateFromConfig(optOn, wall.on);
-
-    auto optDistance = wallTree.get_optional<double>("distance");
-    updateFromConfig(optDistance, wall.distance);
-    
-    auto optThickness = wallTree.get_optional<double>("thickness");
-    updateFromConfig(optThickness, wall.thickness);
+    updateFromConfig(wallTree.get_optional<double>("distance"), wall.distance);
+        
+    updateFromConfig(wallTree.get_optional<double>("thickness"), wall.thickness);
   }    
 }
