@@ -63,8 +63,15 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   Run* run =  
     static_cast<Run*>(G4RunManager::GetRunManager()->GetNonConstCurrentRun());
 
-  double startingZ = -0.75*simConf_->calo.length;
-
+  double startingZ;
+  //make sure positron goes through entire aluminum wall
+  if(simConf_->wall.on){
+    startingZ = -(0.5*simConf_->calo.length + 1.25*(simConf_->wall.distance + 0.5*simConf_->wall.thickness));
+  }
+  else{
+    startingZ = -0.75*simConf_->calo.length;
+  }
+  
   bool first = true;
   for(const auto& conf : simConf_->genVector){    
     double posX;
