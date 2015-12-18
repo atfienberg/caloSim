@@ -5,16 +5,16 @@ project (ToyCaloSimulation)
 find_package(Geant4 REQUIRED ui_all vis_all)
 include(${Geant4_USE_FILE})
 
-execute_process(COMMAND root-config --cflags OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE ROOTCFLAGS)
-execute_process(COMMAND root-config --libs OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE ROOT_LIBRARIES)
+find_package(ROOT REQUIRED)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O2 -std=c++11 ${ROOTCFLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/src/*.hh)
 
 include_directories(${PROJECT_SOURCE_DIR}/src)
 include_directories(${Geant4_INCLUDE_DIR})
+include_directories(${ROOT_INCLUDE_DIRS})
 
 add_executable(runSim ${PROJECT_SOURCE_DIR}/runSim.cc ${sources} ${headers})
 
