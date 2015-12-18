@@ -19,6 +19,6 @@ void EventAction::EndOfEventAction(const G4Event* evt){
   run->recordEndOfEvent();
   
   if( evt->GetEventID() % 100 == 0){
-    std::cout << "Processed Event " << evt->GetEventID() << std::endl;
+    G4cout << "Processed Event " << evt->GetEventID() << G4endl;
   }
 }

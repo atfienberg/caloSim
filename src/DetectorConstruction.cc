@@ -42,7 +42,8 @@
 #include "G4SystemOfUnits.hh"
 #include "G4String.hh"
 #include "G4GlobalMagFieldMessenger.hh"
-#include <iostream>
+
+
 #include <cstdlib>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -6,12 +6,14 @@
 #include "G4SystemOfUnits.hh"
 #include <time.h>
 #include <cmath>
-#include <iostream>
+
+
 #include <string>
 
 
 RunAction::RunAction(std::shared_ptr<SimConfiguration> simConf) :
   G4UserRunAction(),
+  theRun_(nullptr),
   simConf_(simConf)
 {
 }
@@ -34,6 +36,12 @@ void RunAction::EndOfRunAction(const G4Run*){
 }
 
 Run::Run(std::shared_ptr<SimConfiguration> simConf):
+  t_(nullptr),
+  crystalHist_(nullptr),
+  radialHist_(nullptr),
+  radialLongitudinalHist_(nullptr),
+  particleProcessHist_(nullptr),
+  file_(nullptr),
   simConf_(simConf)
 {
 }

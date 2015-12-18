@@ -3,7 +3,8 @@
 #include "RunAction.hh"
 #include "G4RunManager.hh"
 #include <string>
-#include <iostream>
+
+
 
 StackingAction::StackingAction() :
   G4UserStackingAction() {}

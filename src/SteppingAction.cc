@@ -5,7 +5,8 @@
 #include "G4Track.hh"
 #include "RunAction.hh"
 #include "G4String.hh"
-#include <iostream>
+
+
 
 SteppingAction::SteppingAction():
   G4UserSteppingAction()

@@ -47,7 +47,7 @@
 
 class Run : public G4Run{
 public:
-  Run(std::shared_ptr<SimConfiguration> simConf);
+  explicit Run(std::shared_ptr<SimConfiguration> simConf);
   virtual ~Run();
   
   void initializeTreeAndHist();
@@ -90,7 +90,7 @@ class RunAction : public G4UserRunAction
 {
 public:
   
-  RunAction(std::shared_ptr<SimConfiguration> simConf);
+  explicit RunAction(std::shared_ptr<SimConfiguration> simConf);
   virtual ~RunAction();
 
   virtual G4Run* GenerateRun();  
