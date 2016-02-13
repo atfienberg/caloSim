@@ -48,7 +48,18 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 DetectorConstruction::DetectorConstruction(
     std::shared_ptr<SimConfiguration> simConf)
-    : G4VUserDetectorConstruction(), simConf_(simConf) {}
+    : G4VUserDetectorConstruction(),
+      simConf_(simConf),
+      mPbF2_("PbF2", 7.77 * g / cm3, 2) {
+  // build pbf2 material
+  G4NistManager* nist = G4NistManager::Instance();
+  G4Element* Pb = nist->FindOrBuildElement("Pb");
+  G4Element* F = nist->FindOrBuildElement("F");
+  G4int nPb = 1;
+  G4int nF = 2;
+  mPbF2_.AddElement(Pb, nPb);
+  mPbF2_.AddElement(F, nF);
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -63,20 +74,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
   int nRows = simConf_->calo.nRows;
   int nCols = simConf_->calo.nCols;
 
-  // build pbf2 material
-  G4NistManager* nist = G4NistManager::Instance();
-  G4Element* Pb = nist->FindOrBuildElement("Pb");
-  G4Element* F = nist->FindOrBuildElement("F");
-  if (!mPbF2_) {
-    mPbF2_.reset(new G4Material("PbF2", 7.77 * g / cm3, 2));
-    G4int nPb = 1;
-    G4int nF = 2;
-    mPbF2_->AddElement(Pb, nPb);
-    mPbF2_->AddElement(F, nF);
-  }
-
   // Option to switch on/off checking of volumes overlaps
   G4bool checkOverlaps = true;
+
+  G4NistManager* nist = G4NistManager::Instance();
 
   //
   // World
@@ -91,18 +92,18 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
                                 0.5 * worldLength);  // its size
 
   G4LogicalVolume* logicWorld = new G4LogicalVolume(solidWorld,  // its solid
-                                                    worldMat,  // its material
-                                                    "World");  // its name
+                                                    worldMat,    // its material
+                                                    "World");    // its name
 
   G4VPhysicalVolume* physWorld =
-      new G4PVPlacement(0,  // no rotation
+      new G4PVPlacement(0,                // no rotation
                         G4ThreeVector(),  // at (0,0,0)
-                        logicWorld,  // its logical volume
-                        "World",  // its name
-                        0,  // its mother  volume
-                        false,  // no boolean operation
-                        0,  // copy number
-                        checkOverlaps);  // overlaps checking
+                        logicWorld,       // its logical volume
+                        "World",          // its name
+                        0,                // its mother  volume
+                        false,            // no boolean operation
+                        0,                // copy number
+                        checkOverlaps);   // overlaps checking
 
   G4VisAttributes* worldAttr = new G4VisAttributes();
   worldAttr->SetVisibility(false);
@@ -154,7 +155,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
                                   0.5 * crystalHeight, 0.5 * crystalLength);
 
   G4LogicalVolume* logicalCrystal =
-      new G4LogicalVolume(solidCrystal, mPbF2_.get(), "logicalCrystal");
+      new G4LogicalVolume(solidCrystal, &mPbF2_, "logicalCrystal");
 
   for (int row = 0; row < nRows; ++row) {
     for (int col = 0; col < nCols; ++col) {

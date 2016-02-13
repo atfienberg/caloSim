@@ -77,12 +77,12 @@ int main(int argc, char** argv) {
 
   auto physList = fact.GetReferencePhysList("FTFP_BERT_EMY");
 
-  //turn on synch radiation
+  // turn on synch radiation
 
   // auto extraPhys = static_cast<const G4EmExtraPhysics*>(
   //     physList->GetPhysics("G4GammaLeptoNuclearPhys"));
   // const_cast<G4EmExtraPhysics*>(extraPhys)->SynchAll(true);
-  
+
   runManager->SetUserInitialization(physList);
   // runManager->SetUserInitialization(new PhysicsList(simConf));
   runManager->SetUserInitialization(new ActionInitialization(simConf));

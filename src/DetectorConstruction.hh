@@ -55,7 +55,7 @@ public:
   virtual G4VPhysicalVolume* Construct();
 private:
   std::shared_ptr<SimConfiguration> simConf_;
-  std::unique_ptr<G4Material> mPbF2_;
+  G4Material mPbF2_;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
