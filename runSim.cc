@@ -35,14 +35,17 @@
 #include "Randomize.hh"
 
 #include "DetectorConstruction.hh"
-#include "PhysicsList.hh"
+// #include "PhysicsList.hh"
 #include "ActionInitialization.hh"
 #include "SteppingVerbose.hh"
 
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
+#include "G4PhysListFactory.hh"
 
 #include "SimConfiguration.hh"
+
+#include "G4EmExtraPhysics.hh"
 
 #include <ctime>
 #include <cstdlib>
@@ -52,52 +55,59 @@
 
 using namespace std;
 
-int main(int argc,char** argv) {
-
-  //choose the Random engine
+int main(int argc, char** argv) {
+  // choose the Random engine
   G4Random::setTheEngine(new CLHEP::RanecuEngine);
   long seeds[2];
-  seeds[0] = (long) time(NULL);
-  seeds[1] = (long) (seeds[0] * G4UniformRand());
+  seeds[0] = (long)time(NULL);
+  seeds[1] = (long)(seeds[0] * G4UniformRand());
   CLHEP::HepRandom::setTheSeeds(seeds);
 
-  //my Verbose output class
+  // my Verbose output class
   G4VSteppingVerbose::SetInstance(new SteppingVerbose);
 
   // Construct the default run manager
   unique_ptr<G4RunManager> runManager(new G4RunManager);
-  
+
   auto simConf = std::make_shared<SimConfiguration>("simConfiguration.json");
 
-  //initialization classes
+  // initialization classes
   runManager->SetUserInitialization(new DetectorConstruction(simConf));
-  runManager->SetUserInitialization(new PhysicsList(simConf));
+  G4PhysListFactory fact;
+
+  auto physList = fact.GetReferencePhysList("FTFP_BERT_EMY");
+
+  //turn on synch radiation
+
+  // auto extraPhys = static_cast<const G4EmExtraPhysics*>(
+  //     physList->GetPhysics("G4GammaLeptoNuclearPhys"));
+  // const_cast<G4EmExtraPhysics*>(extraPhys)->SynchAll(true);
+  
+  runManager->SetUserInitialization(physList);
+  // runManager->SetUserInitialization(new PhysicsList(simConf));
   runManager->SetUserInitialization(new ActionInitialization(simConf));
 
-   
-  // get the pointer to the User Interface manager 
-  G4UImanager* UI = G4UImanager::GetUIpointer();  
+  // get the pointer to the User Interface manager
+  G4UImanager* UI = G4UImanager::GetUIpointer();
 
-  if (argc!=1)   // batch mode  
-    {
-     G4String command = "/control/execute ";
-     G4String fileName = argv[1];
-     UI->ApplyCommand(command+fileName);
-    }
-    
-  else           //define visualization and UI terminal for interactive mode
-    {       
-      unique_ptr<G4VisManager> visManager(new G4VisExecutive);
-      visManager->Initialize();
-      cout << "vis initializing" << endl;
-      
-      
-      unique_ptr<G4UIExecutive> ui(new G4UIExecutive(argc,argv));      
-      ui->SessionStart();
-    }   
+  if (argc != 1)  // batch mode
+  {
+    G4String command = "/control/execute ";
+    G4String fileName = argv[1];
+    UI->ApplyCommand(command + fileName);
+  }
+
+  else  // define visualization and UI terminal for interactive mode
+  {
+    unique_ptr<G4VisManager> visManager(new G4VisExecutive);
+    visManager->Initialize();
+    cout << "vis initializing" << endl;
+
+    unique_ptr<G4UIExecutive> ui(new G4UIExecutive(argc, argv));
+    ui->SessionStart();
+  }
 
   return 0;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-

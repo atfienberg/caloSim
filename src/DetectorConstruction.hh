@@ -49,12 +49,13 @@ class G4LogicalVolume;
 class DetectorConstruction : public G4VUserDetectorConstruction
 {
 public:
-  DetectorConstruction(std::shared_ptr<SimConfiguration> simConf);
+  explicit DetectorConstruction(std::shared_ptr<SimConfiguration> simConf);
   virtual ~DetectorConstruction();
   
   virtual G4VPhysicalVolume* Construct();
 private:
   std::shared_ptr<SimConfiguration> simConf_;
+  std::unique_ptr<G4Material> mPbF2_;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
